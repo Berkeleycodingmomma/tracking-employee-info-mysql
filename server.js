@@ -8,7 +8,7 @@ const cHelper = require('./lib/choiceHelper');
 const newDept = async () => {
     const department = await inquirer.createPromptModule([{
             tupe: 'input',
-            name: 'name';
+            name: 'name',
             message: 'What is the name of the Department?',
             validate: (name) => {
                 if (name) {
@@ -64,7 +64,8 @@ const newEmp = async () => {
             message: 'What is the Employees Role?',
             choices: mgmtArr,
             loop: false,
-        } {
+        },
+        {
             type: 'list',
             name: 'manager_id',
             message: 'Who is the Employees Manager?',
@@ -105,7 +106,7 @@ const newRole = async () => {
                 }
             }
         }, {
-            type: 'list'
+            type: 'list',
             name: 'department_id',
             message: 'What Department is the Role associated with?',
             choices: choiceArr,
@@ -115,3 +116,68 @@ const newRole = async () => {
     await sql.addRole(role);
     chooseRequest();
 }
+
+//Deleting employee for the BONUS!!!!!!
+
+const delEmp = async () => {
+    const empArr = await cHelper.NonMgmtChoices();
+    const emp = await inquirer.prompt([
+        {
+            type: 'list',
+            name: 'emp_id',
+            message: 'What Employee do you want to delete?',
+            choices: empArr,
+            loop: false,
+        }
+    ]);
+    await sql.deleteEmp(emp);
+    choiceRequest();
+}
+
+//Below is the funtion to update employee's role
+
+const updateEmpRole = async () => {
+    const roleArr = await cHelper.roleChoices();
+    const empArr = await cHelper.empChoices();
+    const emp = await inquirer.prompt([{
+            type: 'list',
+            name: 'emp_id',
+            message: 'What is the Employee that you want to update?',
+            choices: empArr,
+            loop: false,
+        },
+        {
+            type: 'list',
+            name: 'role_id',
+            message: 'What is the Employees Role?',
+            choices: roleArr,
+            loop: false,
+        }
+    ]);
+    await sql.updateEmpRoleById(emp);
+    chooseRequest();
+}
+
+//Below is updating the employee's manager for the BONUS!!!!!
+const updateEmpManager = async () => {
+    const empArr = await cHelper.NonMgmtChoices();
+    const mgmtArr = await cHelper.mgmtChoices();
+    const emp = await inquirer.prompt([{
+            type: 'list',
+            name: 'emp_id',
+            message: 'What is the Employee that you want to update?',
+            choices: empArr,
+            loop: false,
+        },
+        {
+            type: 'list',
+            name: 'manager_id',
+            message: 'Who is the Employees Manager?',
+            choices: mgmtArr,
+            loop: false,
+        }
+    ]);
+    await sql.updateEmpManagerById(emp);
+    choiceRequest;
+}
+
