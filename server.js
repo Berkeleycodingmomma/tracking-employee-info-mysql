@@ -121,15 +121,13 @@ const newRole = async () => {
 
 const delEmp = async () => {
     const empArr = await cHelper.NonMgmtChoices();
-    const emp = await inquirer.prompt([
-        {
-            type: 'list',
-            name: 'emp_id',
-            message: 'What Employee do you want to delete?',
-            choices: empArr,
-            loop: false,
-        }
-    ]);
+    const emp = await inquirer.prompt([{
+        type: 'list',
+        name: 'emp_id',
+        message: 'What Employee do you want to delete?',
+        choices: empArr,
+        loop: false,
+    }]);
     await sql.deleteEmp(emp);
     choiceRequest();
 }
@@ -179,5 +177,100 @@ const updateEmpManager = async () => {
     ]);
     await sql.updateEmpManagerById(emp);
     choiceRequest;
+}
+
+//Function to view all Departments
+
+const viewDepts = () => {
+    sql.getDepts()
+
+        .then(([rows]) => {
+            console.log('\n');
+            console.log(cTable.getTable(rows));
+        })
+        .then(() => {
+            choiceRequest();
+        })
+}
+
+//Function to view all Roles
+
+const viewRoles = () => {
+    sql.getRoles()
+
+        .then(([rows]) => {
+            console.log('\n');
+            console.log(cTable.getTable(rows));
+        })
+        .then(() => {
+            choiceRequest();
+        })
+}
+
+//Function to view all employee's
+
+const viewEmps = () => {
+    sql.getEmps()
+
+        .then(([rows]) => {
+            console.log('\n');
+            console.log(cTable.getTable(rows));
+        })
+        .then(() => {
+            choiceRequest();
+        })
+}
+
+//Functions to view all departments and their budgets for the BONUS!
+
+const viewBudgets = async () => {
+    sql.getBudgetByDept()
+        .then(([rows]) => {
+            console.log('.\n');
+            console.log(cTable.getTable(rows));
+        })
+}
+
+//functions to view all employee's in a certain department for the BONUS!
+
+const viewEmpByIdDept = async () => {
+    const deptArr = await cHelper.deptChoices();
+    inquirer.prompt([{
+            type: 'list',
+            name: 'dept_id',
+            message: 'What Department do you want to view employees for?',
+            choices: deptArr,
+            loop: false
+        }])
+        .then((data) => {
+            sql.getEmpByDeptId(data)
+                .then(([rows]) => {
+                    console.log('\n');
+                    console.log(cTable.getTable(rows))
+                    choiceRequest();
+                })
+        })
+}
+
+
+//functions to view all employee's who report to certain managers for the BONUS!
+
+const viewEmpByMgr = async () => {
+    const mgmtArr = await cHelper.mgmtChoices();
+    inquirer.prompt([{
+            type: 'list',
+            name: 'manager_id',
+            message: 'Which Manager do you want to view employees for?',
+            choices: mgmtArr,
+            loop: false
+        }])
+        .then((data) => {
+            sql.getEmpByMgrId(data)
+                .then(([rows]) => {
+                    console.log('\n');
+                    console.log(cTable.getTable(rows))
+                    choiceRequest();
+                })
+        })
 }
 
