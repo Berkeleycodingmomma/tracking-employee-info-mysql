@@ -105,11 +105,12 @@ const newRole = async () => {
                     console.log('Please enter a Role Salary');
                 }
             }
-        }, {
+        }, 
+        {
             type: 'list',
             name: 'department_id',
             message: 'What Department is the Role associated with?',
-            choices: choiceArr,
+            choices: choicesArr,
             loop: false,
         }
     ]);
@@ -349,3 +350,6 @@ const chooseRequest = () => {
 }
 
 chooseRequest();
+
+
+
