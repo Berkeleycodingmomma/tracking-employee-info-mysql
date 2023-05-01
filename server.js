@@ -295,7 +295,8 @@ const chooseRequest = () => {
                 'View Employees by Manager',
             ],
             loop: false
-        }, ])
+        }, 
+    ])
         .then((data) => {
             const {
                 request

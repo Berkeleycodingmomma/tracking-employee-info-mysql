@@ -39,10 +39,37 @@ Adding Mysql: https://www.npmjs.com/package/mysql2
  ```sh
 
 
+const chooseRequest = () => {
+    inquirer.prompt([{
+            type: 'list',
+            name: 'request',
+            message: 'What would you like to do?',
+            choices: ['Add a Department',
+                'Add an Employee',
+                'Add a Role',
+                'Delete and Employee',
+                'Update Employees Role',
+                'Update Employees Manager',
+                'View All Departments',
+                'View All Employess',
+                'View All Roles',
+                'View Department Budget',
+                'View Employees by Department',
+                'View Employees by Manager',
+            ],
+            loop: false
+        },
+         ])
+        .then((data) => {
+            const {
+                request
+            } = data;
+            console.log(request);
+
 
 ```
 
-**(ABOVE)- 
+**(ABOVE)- I added the prompt questions
 
 --------------------------------------------------------------------------------------------------------------------------------------------------------
 
