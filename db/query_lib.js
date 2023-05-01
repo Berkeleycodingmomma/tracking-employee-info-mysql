@@ -4,6 +4,7 @@ class DBQuery {
     constructor(db) {
         this.db = db;
     }
+
     addDept(data) {
         const values = [data.name];
         return this.db
@@ -25,6 +26,7 @@ class DBQuery {
                 values
             );
     }
+
     addEmp(data) {
         const values = [data.first, data.last, data.role_id, data.manager_id];
         return this.db
@@ -36,6 +38,7 @@ class DBQuery {
                 values
             );
     }
+
     deleteEmp(data) {
         const values = [data.emp_id];
         return this.db
@@ -46,6 +49,7 @@ class DBQuery {
                 values
             );
     }
+
     updateEmpRoleByID(data) {
         const values = [data.role_id, data.emp_id];
         return this.db
@@ -57,6 +61,7 @@ class DBQuery {
                 values
             );
     }
+
     updateEmpManagerById(data) {
         const values = [data.manager_id, data.emp_id];
         return this.db
@@ -68,6 +73,7 @@ class DBQuery {
                 values
             );
     }
+
     getDepts() {
         return this.db
             .promise()
@@ -76,3 +82,107 @@ class DBQuery {
                 FROM department`,
             );
     }
+
+    getEmpByDeptId(data) {
+        const values = [data.dept_id];
+        return this.db
+            .promise()
+            .query(
+                `SELECT e.first_name AS "First Name" , 
+                e.last_name AS "Last Name", 
+                d.department_name AS Department
+                FROM employee e
+                INNER JOIN role r
+                ON e.role_id = r.id
+                INNER JOIN department d
+                ON r.department_id = d.id
+                WHERE d.id = ?`,
+                values
+            );
+    }
+
+    getEmpByMgrId(data) {
+        const values = [data.manager_id];
+        return this.db
+            .promise()
+            .query(
+                `SELECT e.first_name AS "First Name" , 
+                e.last_name AS "Last Name", 
+                CONCAT(mgmt.first_name, ' ', mgmt.last_name) AS Manager
+                FROM employee e
+                INNER JOIN employee mgmt
+                ON e.manager_id = mgmt.id 
+                WHERE e.manager_id = ?`,
+                values
+            );
+    }
+
+    getBudgetByDept(data) {
+        return this.db
+            .promise()
+            .query(
+                `SELECT d.department_name AS Department, 
+            SUM(r.salary) AS Budget
+            FROM role r
+            INNER JOIN department d
+            ON r.department_id = d.id
+            GROUP BY department_name`,
+                values
+            );
+    }
+
+    getRoleId(data) {
+        return this.db
+            .promise()
+            .query(
+                `SELECT *
+                FROM role`,
+                values
+            );
+    }
+
+    getEmps() {
+        return this.db
+            .promise()
+            .query(
+                `SELECT e.id as 'Employee_ID', 
+                  e.first_name AS 'First_Name',
+                  e.last_name AS 'Last_Name',
+                  department.department_name AS Department,
+                  role.salary AS Salary,
+                  role.title AS Role,
+                  CONCAT(mgmt.first_name,' ',mgmt.last_name) as Manager
+          FROM employee e
+          LEFT JOIN employee mgmt
+          ON e.manager_id = mgmt.id 
+          INNER JOIN role
+          ON e.role_id = role.id 
+          LEFT JOIN department 
+          ON role.department_id = department.id
+          ORDER BY e.id;`
+            );
+    }
+
+    getNonManagers() {
+        return this.db
+            .promise()
+            .query(
+                `SELECT id, CONCAT(first_name, ' ', last_name) AS employee_name
+        FROM employee 
+        WHERE manager_id IS NOT NULL`
+            )
+    }
+
+    getManagers() {
+        return this.db
+            .promise()
+            .query(
+                `SELECT id, CONCAT(first_name, ' ', last_name) AS manager_name
+          FROM employee 
+          WHERE manager_id IS NULL`
+            )
+    }
+
+}
+
+module.exports = new DBQuery(db);
