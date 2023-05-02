@@ -24,7 +24,7 @@ Declaration file for module: https://stackoverflow.com/questions/41292559/could-
 ## Youtube link to a walk-through demonstrating how to crete an employee tracker through the command-line
 #
 
-* [Youtube-demo-link]()
+* [Youtube-demo-link](https://studio.youtube.com/video/Es4mwX9x9Kk/edit)
 
 #
 
@@ -159,7 +159,7 @@ const viewEmpByDept = async () => {
 ### Amanda Gray
 
 * [Linkedin](https://www.linkedin.com/in/amanda-gray-831a65254/)
-* [Github]()
+* [Github](https://github.com/Berkeleycodingmomma)
 
 ## Credits
 
