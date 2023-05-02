@@ -24,7 +24,7 @@ Declaration file for module: https://stackoverflow.com/questions/41292559/could-
 ## Youtube link to a walk-through demonstrating how to crete an employee tracker through the command-line
 #
 
-* [Youtube-demo-link](https://studio.youtube.com/video/Es4mwX9x9Kk/edit)
+* [Youtube-demo-link](https://youtu.be/Es4mwX9x9Kk)
 
 #
 
