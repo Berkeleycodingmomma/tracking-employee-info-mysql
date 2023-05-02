@@ -1,355 +1,391 @@
 const inquirer = require('inquirer');
 const cTable = require('console.table');
-const sql = require('./db/query_lib');
+const SQL = require('./db/query_lib');
 const cHelper = require('./lib/choiceHelper');
+// require('console.table');
+const sql = new SQL
 
-//Adding Depatments
 
+// add an department
 const newDept = async () => {
-    const department = await inquirer.createPromptModule([{
-            tupe: 'input',
-            name: 'name',
-            message: 'What is the name of the Department?',
-            validate: (name) => {
-                if (name) {
-                    return true;
 
-                } else {
-                    console.log('Please enter a Department name')
-                    return false;
-                }
-            },
-        },
+  const deptartment = await inquirer.prompt([{
+    type: "input",
+    name: "name",
+    message: "What is the name of the Department",
+    validate: (name) => {
+      if (name) {
+        return true;
+      } else {
+        console.log(" Please Enter a Department Name!")
+        return false;
+      }
+    },
+  }, ]);
 
-    ]);
-    await sql.addDept(department);
+  await sql.addDept(deptartment);
 
-    chooseRequest();
+  chooseRequest();
 }
 
-//Adding Employees
+// add an employee
 const newEmp = async () => {
-    const roleArr = await cHelper.roleChoice();
-    const mgmtArr = await cHelper.mgmtChoices();
-    const emp = await inquirer.createPromptModule([{
-            type: 'input',
-            name: 'first',
-            message: 'What is the Employees first name?',
-            validate: (first) => {
-                if (first && isNan(first)) {
-                    return true;
-                } else {
-                    console.log('Please enter a name')
-                    return false;
-                }
-            },
 
-        },
-        {
-            type: 'input',
-            name: 'last',
-            message: 'What is the Employees last name?',
-            validate: (first) => {
-                if (first && isNan(last)) {
-                    return true;
-                } else {
-                    console.log('Please enter a name')
-                    return false;
-                }
-            },
-        },
-        {
-            type: 'list',
-            name: 'role_id',
-            message: 'What is the Employees Role?',
-            choices: mgmtArr,
-            loop: false,
-        },
-        {
-            type: 'list',
-            name: 'manager_id',
-            message: 'Who is the Employees Manager?',
-            choices: mgmtArr,
-            loop: false,
+  const roleArr = await cHelper.roleChoices();
+
+  const mgmtArr = await cHelper.mgmtChoices();
+
+  const emp = await inquirer.prompt([{
+      type: "input",
+      name: "first",
+      message: "What is the Employees First Name?",
+      validate: (first) => {
+        if (first && isNaN(first)) {
+          return true;
+        } else {
+          console.log(" Please Enter a Name!")
+          return false;
         }
-    ]);
-    await sql.addEmp(emp);
-    choiceRequest();
+      },
+    },
+    {
+      type: "input",
+      name: "last",
+      message: "What is the Employees Last Name?",
+      validate: (last) => {
+        if (last && isNaN(last)) {
+          return true;
+        } else {
+          console.log(" Please Enter a Name!")
+          return false;
+        }
+      },
+    },
+    {
+      type: "list",
+      name: 'role_id',
+      message: "What is the Employees Role?",
+      choices: roleArr,
+      loop: false,
+    },
+    {
+      type: "list",
+      name: 'manager_id',
+      message: "Who is the Employees Manager?",
+      choices: mgmtArr,
+      loop: false,
+    }
+  ]);
+
+  await sql.addEmp(emp);
+
+  chooseRequest();
+
 }
 
-//Adding the roles
+// Add a role
 const newRole = async () => {
-    const choicesArr = await inquirer.createPromptModule([{
-            type: 'input',
-            name: 'title',
-            message: 'What is the name of the Role?',
-            validate: (title) => {
-                if (title) {
-                    return true;
 
-                } else {
-                    console.log('Please enter a Role name.')
-                    return false;
-                }
-            },
-        },
-        {
-            type: 'input',
-            name: 'salary',
-            message: 'What is the Salary of the Role?',
-            validate: (salary) => {
-                if (salary && !isNan(salary)) {
-                    return true;
+  const choicesArr = await cHelper.deptChoices();
 
-                } else {
-                    console.log('Please enter a Role Salary');
-                }
-            }
-        }, 
-        {
-            type: 'list',
-            name: 'department_id',
-            message: 'What Department is the Role associated with?',
-            choices: choicesArr,
-            loop: false,
+  const role = await inquirer.prompt([{
+      type: "input",
+      name: "title",
+      message: "What is the name of the Role?",
+      validate: (title) => {
+        if (title) {
+          return true;
+        } else {
+          console.log(" Please Enter a Role Name!")
+          return false;
         }
-    ]);
-    await sql.addRole(role);
-    chooseRequest();
+      },
+    },
+    {
+      type: "input",
+      name: 'salary',
+      message: "What is the Salary of the Role?",
+      validate: (salary) => {
+        if (salary && !isNaN(salary)) {
+          return true;
+        } else {
+          console.log(" Please Enter a Role Salary");
+        }
+      }
+    },
+    {
+      type: "list",
+      name: 'department_id',
+      message: "What Department is the Role associated with?",
+      choices: choicesArr,
+      loop: false,
+    }
+  ]);
+
+  await sql.addRole(role);
+
+  chooseRequest();
+
 }
 
-//Deleting employee for the BONUS!!!!!!
-
+// Delete and Employee
+// Bonus Objective
 const delEmp = async () => {
-    const empArr = await cHelper.NonMgmtChoices();
-    const emp = await inquirer.prompt([{
-        type: 'list',
-        name: 'emp_id',
-        message: 'What Employee do you want to delete?',
-        choices: empArr,
-        loop: false,
-    }]);
-    await sql.deleteEmp(emp);
-    choiceRequest();
+  const empArr = await cHelper.NonMgmtChoices();
+
+  const emp = await inquirer.prompt([{
+    type: "list",
+    name: "emp_id",
+    message: "What Employee do you want to Delete?",
+    choices: empArr,
+    loop: false,
+  }]);
+
+  await sql.deleteEmp(emp);
+
+  chooseRequest();
+
 }
 
-//Below is the funtion to update employee's role
-
+// Update an employees role
 const updateEmpRole = async () => {
-    const roleArr = await cHelper.roleChoices();
-    const empArr = await cHelper.empChoices();
-    const emp = await inquirer.prompt([{
-            type: 'list',
-            name: 'emp_id',
-            message: 'What is the Employee that you want to update?',
-            choices: empArr,
-            loop: false,
-        },
-        {
-            type: 'list',
-            name: 'role_id',
-            message: 'What is the Employees Role?',
-            choices: roleArr,
-            loop: false,
-        }
-    ]);
-    await sql.updateEmpRoleById(emp);
-    chooseRequest();
+
+  const roleArr = await cHelper.roleChoices();
+
+  const empArr = await cHelper.empChoices();
+
+  const emp = await inquirer.prompt([{
+      type: "list",
+      name: "emp_id",
+      message: "What is the Employee do you want to update?",
+      choices: empArr,
+      loop: false,
+    },
+    {
+      type: "list",
+      name: 'role_id',
+      message: "What is the Employees Role?",
+      choices: roleArr,
+      loop: false,
+    }
+  ]);
+
+  await sql.updateEmpRoleById(emp);
+
+  chooseRequest();
+
 }
 
-//Below is updating the employee's manager for the BONUS!!!!!
+// Update an employees Manager
+// Bonus Objective
 const updateEmpManager = async () => {
-    const empArr = await cHelper.NonMgmtChoices();
-    const mgmtArr = await cHelper.mgmtChoices();
-    const emp = await inquirer.prompt([{
-            type: 'list',
-            name: 'emp_id',
-            message: 'What is the Employee that you want to update?',
-            choices: empArr,
-            loop: false,
-        },
-        {
-            type: 'list',
-            name: 'manager_id',
-            message: 'Who is the Employees Manager?',
-            choices: mgmtArr,
-            loop: false,
-        }
-    ]);
-    await sql.updateEmpManagerById(emp);
-    choiceRequest;
+
+  const empArr = await cHelper.NonMgmtChoices();
+
+  const mgmtArr = await cHelper.mgmtChoices();
+
+  const emp = await inquirer.prompt([{
+      type: "list",
+      name: "emp_id",
+      message: "What is the Employee do you want to update?",
+      choices: empArr,
+      loop: false,
+    },
+    {
+      type: "list",
+      name: 'manager_id',
+      message: "Who is the Employees Manager?",
+      choices: mgmtArr,
+      loop: false,
+    }
+  ]);
+
+  await sql.updateEmpManagerById(emp);
+
+  chooseRequest();
+
 }
 
-//Function to view all Departments
-
+// View All Departments
 const viewDepts = () => {
-    sql.getDepts()
+  sql.getDepts()
 
-        .then(([rows]) => {
-            console.log('\n');
-            console.log(cTable.getTable(rows));
-        })
-        .then(() => {
-            choiceRequest();
-        })
+    .then(([rows]) => {
+      console.log('\n');
+      console.log(cTable.getTable(rows));
+    })
+
+    .then(() => {
+      chooseRequest();
+    })
 }
 
-//Function to view all Roles
-
+// View All Roles
 const viewRoles = () => {
-    sql.getRoles()
+  sql.getRoles()
 
-        .then(([rows]) => {
-            console.log('\n');
-            console.log(cTable.getTable(rows));
-        })
-        .then(() => {
-            choiceRequest();
-        })
+    .then(([rows]) => {
+      console.log('\n');
+      console.log(cTable.getTable(rows));
+    })
+
+    .then(() => {
+      chooseRequest();
+    })
 }
-
-//Function to view all employee's
-
+// View All employees
 const viewEmps = () => {
-    sql.getEmps()
+  sql.getEmps()
 
-        .then(([rows]) => {
-            console.log('\n');
-            console.log(cTable.getTable(rows));
-        })
-        .then(() => {
-            choiceRequest();
-        })
+    .then(([rows]) => {
+      console.log('\n');
+      console.log(cTable.getTable(rows));
+    })
+
+    .then(() => {
+      chooseRequest();
+    })
 }
 
-//Functions to view all departments and their budgets for the BONUS!
-
+// View All Departments and their Budget 
+// Bonus Objective
 const viewBudgets = async () => {
-    sql.getBudgetByDept()
+
+  sql.getBudgetByDept()
+
+    .then(([rows]) => {
+      console.log('\n');
+      console.log(cTable.getTable(rows));
+    })
+
+    .then(() => {
+      chooseRequest();
+    })
+}
+
+// View All Employees in a specific Department
+// Bonus Objective
+const viewEmpByDept = async () => {
+
+  const deptArr = await cHelper.deptChoices();
+
+  inquirer.prompt([{
+      type: "list",
+      name: "dept_id",
+      message: "What is the Department do you want to view Employees for?",
+      choices: deptArr,
+      loop: false
+    }])
+
+    .then((data) => {
+      sql.getEmpByDeptId(data)
         .then(([rows]) => {
-            console.log('.\n');
-            console.log(cTable.getTable(rows));
+          console.log('\n');
+          console.log(cTable.getTable(rows))
+          chooseRequest();
         })
+    })
+
 }
 
-//functions to view all employee's in a certain department for the BONUS!
-
-const viewEmpByIdDept = async () => {
-    const deptArr = await cHelper.deptChoices();
-    inquirer.prompt([{
-            type: 'list',
-            name: 'dept_id',
-            message: 'What Department do you want to view employees for?',
-            choices: deptArr,
-            loop: false
-        }])
-        .then((data) => {
-            sql.getEmpByDeptId(data)
-                .then(([rows]) => {
-                    console.log('\n');
-                    console.log(cTable.getTable(rows))
-                    choiceRequest();
-                })
-        })
-}
-
-
-//functions to view all employee's who report to certain managers for the BONUS!
-
+// View All Employees who report to a specific Manager
+// Bonus Objective
 const viewEmpByMgr = async () => {
-    const mgmtArr = await cHelper.mgmtChoices();
-    inquirer.prompt([{
-            type: 'list',
-            name: 'manager_id',
-            message: 'Which Manager do you want to view employees for?',
-            choices: mgmtArr,
-            loop: false
-        }])
-        .then((data) => {
-            sql.getEmpByMgrId(data)
-                .then(([rows]) => {
-                    console.log('\n');
-                    console.log(cTable.getTable(rows))
-                    choiceRequest();
-                })
+
+  const mgmtArr = await cHelper.mgmtChoices();
+
+  inquirer.prompt([{
+      type: "list",
+      name: "manager_id",
+      message: "Which Manager do you want to view Employees for?",
+      choices: mgmtArr,
+      loop: false
+    }])
+
+    .then((data) => {
+      sql.getEmpByMgrId(data)
+        .then(([rows]) => {
+          console.log('\n');
+          console.log(cTable.getTable(rows))
+          chooseRequest();
         })
+    })
+
 }
 
-//Below I have added the prompt questions
 
 const chooseRequest = () => {
-    inquirer.prompt([{
-            type: 'list',
-            name: 'request',
-            message: 'What would you like to do?',
-            choices: ['Add a Department',
-                'Add an Employee',
-                'Add a Role',
-                'Delete and Employee',
-                'Update Employees Role',
-                'Update Employees Manager',
-                'View All Departments',
-                'View All Employess',
-                'View All Roles',
-                'View Department Budget',
-                'View Employees by Department',
-                'View Employees by Manager',
-            ],
-            loop: false
-        }, 
-    ])
-        .then((data) => {
-            const {
-                request
-            } = data;
-            console.log(request);
+  inquirer.prompt([{
+      type: 'list',
+      name: 'request',
+      message: 'What would you like to do?',
+      choices: ['Add a Department',
+        'Add an Employee',
+        'Add a Role',
+        'Delete an Employee', // Bonus
+        'Update Employees Role',
+        'Update Employees Manager', // Bonus 
+        'View All Departments',
+        'View All Employees',
+        'View All Roles',
+        'View Department Budget', // Bonus
+        'View Employees by Department', // Bonus
+        'View Employees by Manager' // Bonus
+      ],
+      loop: false,
+    }, ])
 
-            // Switch Case
-            switch (request) {
-                case 'Add a Department':
-                    newDept();
-                    break;
-                case 'Add a Role':
-                    newRole();
-                    break;
-                case 'Add an Employee':
-                    newEmp();
-                    break;
-                case 'Delete an Employee':
-                    delEmp();
-                    break;
-                case 'Update Employees Role':
-                    updateEmpRole();
-                    break;
-                case 'Update Employees Manager':
-                    updateEmpManager();
-                    break;
-                case 'View all Departments':
-                    viewDepts();
-                    break;
-                case 'View all Employees':
-                    newEmp();
-                    break;
-                case 'View all Roles':
-                    viewRoles();
-                    break;
-                case 'VIew Department Budget':
-                    viewBudgets();
-                    break;
-                case 'View Employees by Department':
-                    viewEmpByIdDept();
-                    break;
-                case 'View Employees by Manager':
-                    viewEmpByMgr();
-                    break;
+    .then((data) => {
+      const {
+        request
+      } = data;
+      console.log(request);
 
-                default:
-                    break;
-            }
-        })
+
+
+      //   Switch case
+      switch (request) {
+        case 'Add a Department':
+          newDept();
+          break;
+        case 'Add a Role':
+          newRole();
+          break;
+        case 'Add an Employee':
+          newEmp();
+          break;
+        case 'Delete an Employee':
+          delEmp();
+          break;
+        case 'Update Employees Role':
+          updateEmpRole();
+          break;
+        case 'Update Employees Manager':
+          updateEmpManager();
+          break;
+        case 'View All Departments':
+          viewDepts();
+          break;
+        case 'View All Employees':
+          viewEmps();
+          break;
+        case 'View All Roles':
+          viewRoles();
+          break;
+        case 'View Department Budget':
+          viewBudgets();
+          break;
+        case 'View Employees by Department':
+          viewEmpByDept();
+          break;
+        case 'View Employees by Manager':
+          viewEmpByMgr();
+          break;
+
+        default:
+          break;
+      }
+    })
 }
 
 chooseRequest();
-
-
-

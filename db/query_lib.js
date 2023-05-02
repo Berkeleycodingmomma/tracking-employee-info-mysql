@@ -1,16 +1,16 @@
-const db = require('./connection');
+
+const dataBase = require('./connection');
 
 class DBQuery {
-    constructor(db) {
-        this.db = db;
+    constructor() {
+        this.db = dataBase;
     }
-
     addDept(data) {
         const values = [data.name];
         return this.db
             .promise()
             .query(
-                `INSERT INTO department department_name) VALUES(?)`,
+                `INSERT INTO department (department_name) VALUES(?)`,
                 values
             );
     }
@@ -74,14 +74,24 @@ class DBQuery {
             );
     }
 
+    // getDepts() {
+    //     return this.db
+    //         .promise()
+    //         .query(
+    //             `SELECT *
+    //             FROM department`,
+    //         );
+    // }
+
     getDepts() {
-        return this.db
-            .promise()
-            .query(
-                `SELECT *
-                FROM department`,
-            );
+        return this.db.promise().query(
+            `SELECT * 
+    FROM department`
+        );
     }
+
+
+
 
     getEmpByDeptId(data) {
         const values = [data.dept_id];
@@ -131,10 +141,17 @@ class DBQuery {
             );
     }
 
+    // getRoleIds(){
+    //     return this.db
+    //       .promise()
+    //       .query(
+    //       `SELECT *
+    //       FROM role`
+    //       );
+    //   }
+
     getRoleId(data) {
-        return this.db
-            .promise()
-            .query(
+        return this.db.promise().query(
                 `SELECT *
                 FROM role`,
                 values
@@ -184,5 +201,15 @@ class DBQuery {
     }
 
 }
+module.exports = DBQuery
 
-module.exports = new DBQuery(db);
+
+
+
+
+
+
+
+
+
+
