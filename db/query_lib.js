@@ -30,7 +30,7 @@ class DBQuery {
         return this.db
             .promise()
             .query(
-                `INSERT INTO employee (first_name, last_name, manager_id) VALUES(?,?,?,?)`,
+                `INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES(?,?,?,?)`,
                 values
             );
     }
@@ -70,7 +70,12 @@ class DBQuery {
             .promise()
             .query(
                 `SELECT * FROM department`
-            );
+            )
+            .then(([rows]) => rows)
+            .catch((err) => {
+                console.error('Error retrieving departments: ', err);
+                return [];
+            });
     }
 
     getEmpByDeptId(data) {
@@ -101,7 +106,7 @@ class DBQuery {
             );
     }
 
-    getRoles(data) {
+    getRole(data) {
         return this.db
             .promise()
             .query(
