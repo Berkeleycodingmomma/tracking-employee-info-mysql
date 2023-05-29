@@ -1,10 +1,10 @@
-
-const dataBase = require('./connection');
+const dataBase = require('../db/connection');
 
 class DBQuery {
     constructor() {
         this.db = dataBase;
     }
+
     addDept(data) {
         const values = [data.name];
         return this.db
@@ -20,9 +20,7 @@ class DBQuery {
         return this.db
             .promise()
             .query(
-                `INSERT INTO role
-                (title, salary, department_id)
-                VALUES(?,?,?)`,
+                `INSERT INTO role (title, salary, department_id) VALUES(?,?,?)`,
                 values
             );
     }
@@ -32,9 +30,7 @@ class DBQuery {
         return this.db
             .promise()
             .query(
-                `INSERT INTO employee
-                (first_name, last_name, manager_id) 
-                VALUES(?,?,?,?)`,
+                `INSERT INTO employee (first_name, last_name, manager_id) VALUES(?,?,?,?)`,
                 values
             );
     }
@@ -44,8 +40,7 @@ class DBQuery {
         return this.db
             .promise()
             .query(
-                `DELETE FROM employee
-                WHERE id = ?`,
+                `DELETE FROM employee WHERE id = ?`,
                 values
             );
     }
@@ -55,9 +50,7 @@ class DBQuery {
         return this.db
             .promise()
             .query(
-                `UPDATE employee
-                SET role_id = ?
-                WHERE id = ?`,
+                `UPDATE employee SET role_id = ? WHERE id = ?`,
                 values
             );
     }
@@ -67,46 +60,25 @@ class DBQuery {
         return this.db
             .promise()
             .query(
-                `UPDATE employee
-                SET manager_id = ?
-                WHERE id = ?`,
+                `UPDATE employee SET manager_id = ? WHERE id = ?`,
                 values
             );
     }
 
-    // getDepts() {
-    //     return this.db
-    //         .promise()
-    //         .query(
-    //             `SELECT *
-    //             FROM department`,
-    //         );
-    // }
-
-    getDepts() {
-        return this.db.promise().query(
-            `SELECT * 
-    FROM department`
-        );
+    getDept() {
+        return this.db
+            .promise()
+            .query(
+                `SELECT * FROM department`
+            );
     }
-
-
-
 
     getEmpByDeptId(data) {
         const values = [data.dept_id];
         return this.db
             .promise()
             .query(
-                `SELECT e.first_name AS "First Name" , 
-                e.last_name AS "Last Name", 
-                d.department_name AS Department
-                FROM employee e
-                INNER JOIN role r
-                ON e.role_id = r.id
-                INNER JOIN department d
-                ON r.department_id = d.id
-                WHERE d.id = ?`,
+                `SELECT e.first_name AS "First Name", e.last_name AS "Last Name", d.department_name AS Department FROM employee e INNER JOIN role r ON e.role_id = r.id INNER JOIN department d ON r.department_id = d.id WHERE d.id = ?`,
                 values
             );
     }
@@ -116,13 +88,7 @@ class DBQuery {
         return this.db
             .promise()
             .query(
-                `SELECT e.first_name AS "First Name" , 
-                e.last_name AS "Last Name", 
-                CONCAT(mgmt.first_name, ' ', mgmt.last_name) AS Manager
-                FROM employee e
-                INNER JOIN employee mgmt
-                ON e.manager_id = mgmt.id 
-                WHERE e.manager_id = ?`,
+                `SELECT e.first_name AS "First Name", e.last_name AS "Last Name", CONCAT(mgmt.first_name, ' ', mgmt.last_name) AS Manager FROM employee e INNER JOIN employee mgmt ON e.manager_id = mgmt.id WHERE e.manager_id = ?`,
                 values
             );
     }
@@ -131,85 +97,25 @@ class DBQuery {
         return this.db
             .promise()
             .query(
-                `SELECT d.department_name AS Department, 
-            SUM(r.salary) AS Budget
-            FROM role r
-            INNER JOIN department d
-            ON r.department_id = d.id
-            GROUP BY department_name`,
-                values
+                `SELECT d.department_name AS Department, SUM(r.salary) AS Budget FROM role r INNER JOIN department d ON r.department_id = d.id GROUP BY department_name`
             );
     }
 
-    // getRoleIds(){
-    //     return this.db
-    //       .promise()
-    //       .query(
-    //       `SELECT *
-    //       FROM role`
-    //       );
-    //   }
-
-    getRoleId(data) {
-        return this.db.promise().query(
-                `SELECT *
-                FROM role`,
-                values
+    getRoles(data) {
+        return this.db
+            .promise()
+            .query(
+                `SELECT * FROM role`
             );
     }
 
-    getEmps() {
+    getEmp() {
         return this.db
             .promise()
             .query(
-                `SELECT e.id as 'Employee_ID', 
-                  e.first_name AS 'First_Name',
-                  e.last_name AS 'Last_Name',
-                  department.department_name AS Department,
-                  role.salary AS Salary,
-                  role.title AS Role,
-                  CONCAT(mgmt.first_name,' ',mgmt.last_name) as Manager
-          FROM employee e
-          LEFT JOIN employee mgmt
-          ON e.manager_id = mgmt.id 
-          INNER JOIN role
-          ON e.role_id = role.id 
-          LEFT JOIN department 
-          ON role.department_id = department.id
-          ORDER BY e.id;`
+                `SELECT e.id as 'Employee_ID', e.first_name, e.last_name FROM employee e`
             );
     }
-
-    getNonManagers() {
-        return this.db
-            .promise()
-            .query(
-                `SELECT id, CONCAT(first_name, ' ', last_name) AS employee_name
-        FROM employee 
-        WHERE manager_id IS NOT NULL`
-            )
-    }
-
-    getManagers() {
-        return this.db
-            .promise()
-            .query(
-                `SELECT id, CONCAT(first_name, ' ', last_name) AS manager_name
-          FROM employee 
-          WHERE manager_id IS NULL`
-            )
-    }
-
 }
-module.exports = DBQuery
 
-
-
-
-
-
-
-
-
-
-
+module.exports = DBQuery;

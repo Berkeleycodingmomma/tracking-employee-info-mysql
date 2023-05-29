@@ -3,7 +3,7 @@ const cTable = require('console.table');
 const SQL = require('./db/query_lib');
 const cHelper = require('./lib/choiceHelper');
 // require('console.table');
-const sql = new SQL
+const sql = new SQL();
 
 
 // add an department
@@ -207,8 +207,8 @@ const updateEmpManager = async () => {
 }
 
 // View All Departments
-const viewDepts = () => {
-  sql.getDepts()
+const viewDept = () => {
+  sql.getDept()
 
     .then(([rows]) => {
       console.log('\n');
@@ -234,8 +234,8 @@ const viewRoles = () => {
     })
 }
 // View All employees
-const viewEmps = () => {
-  sql.getEmps()
+const viewEmp = () => {
+  sql.getEmp()
 
     .then(([rows]) => {
       console.log('\n');
@@ -364,10 +364,10 @@ const chooseRequest = () => {
           updateEmpManager();
           break;
         case 'View All Departments':
-          viewDepts();
+          viewDept();
           break;
         case 'View All Employees':
-          viewEmps();
+          viewEmp();
           break;
         case 'View All Roles':
           viewRoles();
